@@ -6,7 +6,10 @@ require 'minitest/reporters'
 Minitest::Reporters.use! Minitest::Reporters::ProgressReporter.new
 
 require 'rack/test'
+
 require './app'
+require './db/setup'
+require './lib/all'
 
 class AppTests < Minitest::Test
   include Rack::Test::Methods
@@ -26,6 +29,8 @@ class AppTests < Minitest::Test
   def make_item
     Item.create! description: "Old Busted", price: 3.50
   end
+
+focus
 
   def test_can_add_users
     assert_equal 0, User.count
