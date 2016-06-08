@@ -27,7 +27,7 @@ class AppTests < Minitest::Test
   end
 
   def make_item
-    Item.create! description: "Old Busted", price: 3.50
+    Item.create! description: "Old Busted", price: 3.50, listed_by: User.first.id
   end
 
   def test_can_add_users
@@ -39,7 +39,7 @@ class AppTests < Minitest::Test
     assert_equal 1, User.count
     assert_equal "New", User.first.first_name
   end
-focus
+
   def test_users_can_add_items
     user = make_existing_user
     header "Authorization", user.first_name
@@ -54,8 +54,8 @@ focus
   end
 
   def test_users_can_buy_items
-    item = make_item
     user = make_existing_user
+    item = make_item
     header "Authorization", user.first_name
 
     r = post "/items/#{item.id}/buy", quantity: 5
@@ -78,8 +78,8 @@ focus
   end
 
   def test_users_cant_delete_arbitrary_items
-    item = make_item
     user = make_existing_user
+    item = make_item
     header "Authorization", user.first_name
 
     r = delete "/items/#{item.id}"
@@ -87,10 +87,10 @@ focus
     assert_equal 403, r.status
     assert_equal 1, Item.count
   end
-#focus
+focus
   def test_users_can_delete_their_items
-    item = make_item
     user = make_existing_user
+    item = make_item
     header "Authorization", user.first_name
     binding.pry
     item.listed_by = user
