@@ -11,6 +11,8 @@ require './app'
 require './db/setup'
 require './lib/all'
 
+
+
 class AppTests < Minitest::Test
   include Rack::Test::Methods
 
@@ -92,8 +94,8 @@ focus
     user = make_existing_user
     item = make_item
     header "Authorization", user.first_name
-    binding.pry
-    item.listed_by = user
+
+    item.listed_by = user.id
     item.save!
     r = delete "/items/#{item.id}"
 
