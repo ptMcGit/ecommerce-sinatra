@@ -30,17 +30,17 @@ class AppTests < Minitest::Test
     Item.create! description: "Old Busted", price: 3.50
   end
 
-focus
-
   def test_can_add_users
     assert_equal 0, User.count
 
     r = post "/users", first_name: "New", last_name: "User", password: "password"
-
+    binding.pry
     assert_equal 200, r.status
     assert_equal 1, User.count
     assert_equal "New", User.first.first_name
   end
+
+focus
 
   def test_users_can_add_items
     user = make_existing_user
