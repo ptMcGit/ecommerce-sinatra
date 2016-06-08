@@ -39,7 +39,7 @@ class AppTests < Minitest::Test
     assert_equal 1, User.count
     assert_equal "New", User.first.first_name
   end
-
+focus
   def test_users_can_add_items
     user = make_existing_user
     header "Authorization", user.first_name
@@ -50,8 +50,9 @@ class AppTests < Minitest::Test
     assert_equal 200, r.status
     assert_equal 1, Item.count
     assert_equal "New Hotness", Item.first.description
+    assert_equal user.id, Item.first.listed_by
   end
-focus
+
   def test_users_can_buy_items
     item = make_item
     user = make_existing_user
@@ -86,12 +87,12 @@ focus
     assert_equal 403, r.status
     assert_equal 1, Item.count
   end
-
+#focus
   def test_users_can_delete_their_items
     item = make_item
     user = make_existing_user
     header "Authorization", user.first_name
-
+    binding.pry
     item.listed_by = user
     item.save!
     r = delete "/items/#{item.id}"

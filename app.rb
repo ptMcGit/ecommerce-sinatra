@@ -43,7 +43,8 @@ class ShopDBApp < Sinatra::Base
   end
 
   def add_new_item
-    Item.first_or_create params
+    Item.first_or_create params.merge "listed_by"=>user_id
+    binding.pry
   end
 
   def purchase_item
@@ -51,6 +52,7 @@ class ShopDBApp < Sinatra::Base
   end
 
   def delete_item
+    binding.pry
     halt 403
   end
 
