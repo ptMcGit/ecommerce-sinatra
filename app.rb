@@ -34,6 +34,10 @@ class ShopDBApp < Sinatra::Base
     purchase_item
   end
 
+  delete "/items/:item_id" do
+    delete_item
+  end
+
   def create_new_user
     User.first_or_create params
   end
@@ -44,6 +48,10 @@ class ShopDBApp < Sinatra::Base
 
   def purchase_item
       Purchase.create quantity: params["quantity"], item_id: item_id, user_id: user_id
+  end
+
+  def delete_item
+    halt 403
   end
 
   def require_authorization!
@@ -65,7 +73,7 @@ class ShopDBApp < Sinatra::Base
   end
 
   def item_id
-    item_id ||= Item.find(params["item_id"])
+    item_id ||= Item.find(params["item_id"]).id
   end
 
 end
