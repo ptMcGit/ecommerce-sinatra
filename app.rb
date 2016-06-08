@@ -7,6 +7,9 @@ class ShopDBApp < Sinatra::Base
   set :show_exceptions, false
 
   error do |e|
+    if e.is_a? ActiveRecord::RecordNotFound
+      raise e
+    end
     binding.pry
     raise e
   end
@@ -40,10 +43,8 @@ class ShopDBApp < Sinatra::Base
   end
 
   def purchase_item
-    binding.pry
-    Purchase.create quantity: params["quantity"], item_id: params["item_id"], user_id: user_id
+      Purchase.create quantity: params["quantity"], item_id: item_id, user_id: user_id
   end
-
 
   def require_authorization!
     unless username
@@ -61,6 +62,10 @@ class ShopDBApp < Sinatra::Base
   def user_id
     user_id ||= User.find_by(first_name: username).id
     user_id
+  end
+
+  def item_id
+    item_id ||= Item.find(params["item_id"])
   end
 
 end
