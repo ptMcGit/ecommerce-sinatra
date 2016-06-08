@@ -53,7 +53,12 @@ class ShopDBApp < Sinatra::Base
 
   def delete_item
     binding.pry
-    halt 403
+    i = User.find_by(user_id).items.find(item_id)
+    if i
+      i.destroy
+    else
+      halt 403
+    end
   end
 
   def require_authorization!
