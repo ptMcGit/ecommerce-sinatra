@@ -15,12 +15,29 @@ class ShopDBApp < Sinatra::Base
     [User, Item, Purchase].each { |klass| klass.delete_all }
   end
 
+  before do
+    require_authorization!
+  end
+
   post "/users" do
     create_new_user
   end
 
   def create_new_user
     User.first_or_create params
+  end
+
+  def require_authorization!
+    unless username
+      halt(
+        401,
+        json("status": "error", "error": "You must log in.")
+      )
+    end
+  end
+
+  def username
+    request.env["HTTP_AUTHORIZATION"]
   end
 
 end
