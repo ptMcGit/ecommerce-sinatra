@@ -23,8 +23,16 @@ class ShopDBApp < Sinatra::Base
     create_new_user
   end
 
+  post "/items" do
+    add_new_item
+  end
+
   def create_new_user
     User.first_or_create params
+  end
+
+  def add_new_item
+    Item.first_or_create params
   end
 
   def require_authorization!
