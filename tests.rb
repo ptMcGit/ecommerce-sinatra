@@ -40,11 +40,9 @@ class AppTests < Minitest::Test
     assert_equal "New", User.first.first_name
   end
 
-focus
-
   def test_users_can_add_items
     user = make_existing_user
-    header "Authorization", user.password
+    header "Authorization", user.first_name
     assert_equal 0, Item.count
 
     r = post "/items", description: "New Hotness", price: 100.00
@@ -53,11 +51,11 @@ focus
     assert_equal 1, Item.count
     assert_equal "New Hotness", Item.first.description
   end
-
+focus
   def test_users_can_buy_items
     item = make_item
     user = make_existing_user
-    header "Authorization", user.password
+    header "Authorization", user.first_name
 
     r = post "/items/#{item.id}/buy", quantity: 5
 
@@ -69,7 +67,7 @@ focus
 
   def test_users_cant_buy_non_items
     user = make_existing_user
-    header "Authorization", user.password
+    header "Authorization", user.first_name
 
     assert_raises ActiveRecord::RecordNotFound do
       post "/items/99999/buy", quantity: 5
@@ -81,7 +79,7 @@ focus
   def test_users_cant_delete_arbitrary_items
     item = make_item
     user = make_existing_user
-    header "Authorization", user.password
+    header "Authorization", user.first_name
 
     r = delete "/items/#{item.id}"
 
@@ -92,7 +90,7 @@ focus
   def test_users_can_delete_their_items
     item = make_item
     user = make_existing_user
-    header "Authorization", user.password
+    header "Authorization", user.first_name
 
     item.listed_by = user
     item.save!

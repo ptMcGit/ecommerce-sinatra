@@ -27,6 +27,10 @@ class ShopDBApp < Sinatra::Base
     add_new_item
   end
 
+  post "/items/:item_id/buy" do
+    purchase_item
+  end
+
   def create_new_user
     User.first_or_create params
   end
@@ -34,6 +38,12 @@ class ShopDBApp < Sinatra::Base
   def add_new_item
     Item.first_or_create params
   end
+
+  def purchase_item
+    binding.pry
+    Purchase.create quantity: params["quantity"], item_id: params["item_id"], user_id: user_id
+  end
+
 
   def require_authorization!
     unless username
@@ -46,6 +56,11 @@ class ShopDBApp < Sinatra::Base
 
   def username
     request.env["HTTP_AUTHORIZATION"]
+  end
+
+  def user_id
+    user_id ||= User.find_by(first_name: username).id
+    user_id
   end
 
 end
