@@ -11,7 +11,7 @@ class ShopDBApp < Sinatra::Base
     if e.is_a? ActiveRecord::RecordNotFound
       raise e
     end
-    binding.pry
+    #binding.pry
     raise e
   end
 
@@ -57,12 +57,11 @@ class ShopDBApp < Sinatra::Base
 
   def show_purchases_for_an_item
     i = Item.find(item_id)
-    binding.pry
     json i.purchases
   end
 
   def delete_item
-    i = User.find_by(user_id).items.find(item_id)
+    i = User.find(user_id).items.find_by(item_id)
     if i
       i.destroy
     else
@@ -72,7 +71,6 @@ class ShopDBApp < Sinatra::Base
 
   def require_authorization!
     unless username
-      binding.pry
       halt(
         401,
         json("status": "error", "error": "You must log in.")

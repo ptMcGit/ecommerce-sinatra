@@ -28,15 +28,24 @@ class AppTests < Minitest::Test
     User.create! first_name: "Existing", last_name: "User", password: "hunter2"
   end
 
+  def make_other_user
+    User.create! first_name: "Other", last_name: "User", password: "abc123"
+  end
+
+  def run_as_admin
+    header "Authorization", "admin"
+  end
+
   def make_item
     Item.create! description: "Old Busted", price: 3.50, listed_by: User.first.id
   end
 
   def test_can_add_users
+    run_as_admin
     assert_equal 0, User.count
 
     r = post "/users", first_name: "New", last_name: "User", password: "password"
-    binding.pry
+
     assert_equal 200, r.status
     assert_equal 1, User.count
     assert_equal "New", User.first.first_name
@@ -80,10 +89,12 @@ class AppTests < Minitest::Test
   end
 
   def test_users_cant_delete_arbitrary_items
-    user = make_existing_user
+    user1 = make_existing_user
+    header "Authorization", user1.first_name
     item = make_item
-    header "Authorization", user.first_name
 
+    user2 = make_other_user
+    header "Authorization", user2.first_name
     r = delete "/items/#{item.id}"
 
     assert_equal 403, r.status
@@ -102,7 +113,7 @@ class AppTests < Minitest::Test
     assert_equal 200, r.status
     assert_equal 0, Item.count
   end
-  focus
+
   def test_users_can_see_who_has_ordered_an_item
     user = make_existing_user
     item = make_item
