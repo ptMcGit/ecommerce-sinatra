@@ -89,7 +89,7 @@ class AppTests < Minitest::Test
     assert_equal 403, r.status
     assert_equal 1, Item.count
   end
-focus
+
   def test_users_can_delete_their_items
     user = make_existing_user
     item = make_item
@@ -102,9 +102,12 @@ focus
     assert_equal 200, r.status
     assert_equal 0, Item.count
   end
-
+  focus
   def test_users_can_see_who_has_ordered_an_item
+    user = make_existing_user
     item = make_item
+    header "Authorization", user.first_name
+
     3.times do |i|
       u = User.create! first_name: i, last_name: i, password: "pass#{i}"
       u.purchases.create! item: item, quantity: 4

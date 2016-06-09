@@ -23,6 +23,10 @@ class ShopDBApp < Sinatra::Base
     require_authorization!
   end
 
+  get "/items/:item_id/purchases" do
+    show_purchases_for_an_item
+  end
+
   post "/users" do
     create_new_user
   end
@@ -49,6 +53,12 @@ class ShopDBApp < Sinatra::Base
 
   def purchase_item
       Purchase.create quantity: params["quantity"], item_id: item_id, user_id: user_id
+  end
+
+  def show_purchases_for_an_item
+    i = Item.find(item_id)
+    binding.pry
+    json i.purchases
   end
 
   def delete_item
