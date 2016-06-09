@@ -1,6 +1,7 @@
 # This is a starting point. Feel free to add / modify, as long as the tests pass
 require 'pry'
 require 'sinatra'
+require 'sinatra/json'
 
 class ShopDBApp < Sinatra::Base
   set :logging, true
@@ -44,7 +45,6 @@ class ShopDBApp < Sinatra::Base
 
   def add_new_item
     Item.first_or_create params.merge "listed_by"=>user_id
-    binding.pry
   end
 
   def purchase_item
@@ -52,7 +52,6 @@ class ShopDBApp < Sinatra::Base
   end
 
   def delete_item
-    binding.pry
     i = User.find_by(user_id).items.find(item_id)
     if i
       i.destroy
@@ -63,6 +62,7 @@ class ShopDBApp < Sinatra::Base
 
   def require_authorization!
     unless username
+      binding.pry
       halt(
         401,
         json("status": "error", "error": "You must log in.")
